@@ -61,7 +61,7 @@ jobs:
       - name: Package chart
         run: |
           helm package --version "$CHART_VERSION" --destination build/chart .
-          helm s3 push build/chart/${CHART_VERSION}.tgz spacelift-test
+          helm s3 push build/chart/spacelift-test-${CHART_VERSION}.tgz spacelift-test
 
       #- name: Upload the chart to S3
       #  run: >-
