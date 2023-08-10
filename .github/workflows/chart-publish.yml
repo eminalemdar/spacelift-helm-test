@@ -39,7 +39,7 @@ jobs:
         run: mkdir -p build/chart
 
       - name: Download existing index.yaml
-        run: curl -fs ${REGISTRY_URL}/index.yaml -o build/index-current.yaml
+        run: helm repo add spacelift-test ${REGISTRY_URL}
         # The first time this step runs the index file won't exist, so allow the step to fail
         continue-on-error: true
 
