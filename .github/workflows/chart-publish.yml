@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HELM_VERSION: "3.7.1"
-      REGISTRY_URL: "s3://test-helm-bucket"
+      REGISTRY_URL: "s3://test-helm-bucket/helm"
       CHART_VERSION_PREFIX: "0.0.2-preprod"
     permissions:
       id-token: write
@@ -54,7 +54,7 @@ jobs:
       - name: Package chart
         run: |
           helm package --version "$CHART_VERSION" --destination build/chart .
-          helm s3 push build/chart/${CHART_VERSION}.tgz spacelift
+          helm s3 push build/chart/${CHART_VERSION}.tgz spacelift-test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
