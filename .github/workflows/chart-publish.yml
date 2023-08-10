@@ -15,7 +15,7 @@ jobs:
     env:
       HELM_VERSION: "3.7.1"
       REGISTRY_URL: "s3://test-helm-bucket/helm"
-      CHART_VERSION_PREFIX: "0.0.2-preprod"
+      CHART_VERSION_PREFIX: "0.0.3-preprod"
     permissions:
       id-token: write
       contents: read
