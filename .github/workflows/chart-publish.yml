@@ -15,7 +15,7 @@ jobs:
     env:
       HELM_VERSION: "3.7.1"
       REGISTRY_URL: "s3://test-helm-bucket"
-      CHART_VERSION_PREFIX: "0.0.1-preprod"
+      CHART_VERSION_PREFIX: "0.0.2-preprod"
     permissions:
       id-token: write
       contents: read
@@ -31,6 +31,9 @@ jobs:
           sudo mv linux-amd64/helm /usr/local/bin
           rm helm-v${HELM_VERSION}-linux-amd64.tar.gz
           rm -rf linux-amd64
+
+      - name: Install Helm S3 Plugin
+        run: helm plugin install https://github.com/hypnoglow/helm-s3.git
 
       - name: Create output directory
         run: mkdir -p build/chart
@@ -51,7 +54,7 @@ jobs:
       - name: Package chart
         run: |
           helm package --version "$CHART_VERSION" --destination build/chart .
-          helm repo index build/chart --url "$REGISTRY_URL" --merge "build/index-current.yaml"
+          helm s3 push build/chart/ 
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -60,11 +63,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Upload the chart to S3
-        run: >-
-          aws s3 sync
-          build/chart s3://${{ secrets.AWS_S3_BUCKET }}/helm
-          --no-progress
+      #- name: Upload the chart to S3
+      #  run: >-
+      #    aws s3 sync
+      #    build/chart s3://${{ secrets.AWS_S3_BUCKET }}/helm
+      #    --no-progress
 
       #- name: Invalidate cache
       #  run: >-
