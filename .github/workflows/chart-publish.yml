@@ -54,7 +54,7 @@ jobs:
       - name: Package chart
         run: |
           helm package --version "$CHART_VERSION" --destination build/chart .
-          helm s3 push build/chart/ 
+          helm s3 push build/chart/${CHART_VERSION}.tgz spacelift-test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
