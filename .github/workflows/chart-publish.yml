@@ -67,7 +67,7 @@ jobs:
       - name: Package chart1
         run: |
           helm package --version "$CHART_VERSION" --destination build/chart/chart1 chart1/
-          helm s3 push build/chart/chart1-${CHART_VERSION}.tgz spacelift-test
+          helm s3 push build/chart/chart1/spacelift-test-${CHART_VERSION}.tgz spacelift-test
 
       - name: Package chart2
         run: |
