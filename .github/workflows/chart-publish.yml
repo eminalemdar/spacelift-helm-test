@@ -15,7 +15,7 @@ jobs:
     env:
       HELM_VERSION: "3.7.1"
       REGISTRY_URL: "s3://test-helm-bucket/helm"
-      CHART_VERSION_PREFIX: "0.0.3-preprod"
+      CHART_VERSION_PREFIX: "0.0.4-preprod"
     permissions:
       id-token: write
       contents: read
@@ -35,8 +35,11 @@ jobs:
       - name: Install Helm S3 Plugin
         run: helm plugin install https://github.com/hypnoglow/helm-s3.git
 
-      - name: Create output directory
-        run: mkdir -p build/chart
+      - name: Create output directory for chart1
+        run: mkdir -p build/chart/chart1
+
+      - name: Create output directory for chart2
+        run: mkdir -p build/chart/chart2
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -55,13 +58,21 @@ jobs:
           timestamp=$(date +'%s')
           echo "CHART_VERSION=${CHART_VERSION_PREFIX}.${timestamp}" >> $GITHUB_ENV
 
-      - name: Lint chart
-        run: helm lint .
+      - name: Lint chart1
+        run: helm lint chart1/
 
-      - name: Package chart
+      - name: Lint chart2
+        run: helm lint chart2/
+
+      - name: Package chart1
         run: |
-          helm package --version "$CHART_VERSION" --destination build/chart .
-          helm s3 push build/chart/spacelift-test-${CHART_VERSION}.tgz spacelift-test
+          helm package --version "$CHART_VERSION" --destination build/chart/chart1 chart1/
+          helm s3 push build/chart/chart1-${CHART_VERSION}.tgz spacelift-test
+
+      - name: Package chart2
+        run: |
+          helm package --version "$CHART_VERSION" --destination build/chart/chart2 chart2/
+          helm s3 push build/chart/chart2-${CHART_VERSION}.tgz spacelift-test2
 
       #- name: Upload the chart to S3
       #  run: >-
